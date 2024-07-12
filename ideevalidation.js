@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displayIdeas() {
-        ideasContainer.innerHTML = ""; // Clear the container
+        ideasContainer.innerHTML = ""; 
         const ideas = JSON.parse(localStorage.getItem("ideas")) || [];
     
         ideas.forEach(idea => {
