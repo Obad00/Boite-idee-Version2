@@ -104,12 +104,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("div");
             card.classList.add("card");
     
-            // Add disapproved class if the idea is disapproved
+            // Ajouter la classe désapprouvée si l'idée est désapprouvée
             if (idea.status === "Désapprouvée") {
                 card.classList.add("disapproved");
             }
     
-            // Determine the initial button class and icon based on idea status
+            // Déterminer la classe et l'icône du bouton initial en fonction de l'état de l'idée
             let buttonClass, iconClass;
             if (idea.status === "Approuvée") {
                 buttonClass = "disapprove-btn";
@@ -136,15 +136,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
             const statusBtn = card.querySelector(".approve-btn, .disapprove-btn");
             statusBtn.addEventListener("click", () => {
-                // Toggle between "Approuvée" and "Désapprouvée"
+                // Basculer entre "Approuvée" and "Désapprouvée"
                 idea.status = idea.status === "Approuvée" ? "Désapprouvée" : "Approuvée";
                 updateIdeaInStorage(ideas);
-                displayIdeas(); // Refresh the displayed ideas
+                displayIdeas(); // Rafraîchir les idées affichées
             });
     
             card.querySelector(".delete-btn").addEventListener("click", () => {
                 removeIdeaFromStorage(idea);
-                displayIdeas(); // Refresh the displayed ideas after deletion
+                displayIdeas(); // Actualiser les idées affichées après leur suppression
             });
     
             ideasContainer.appendChild(card);
