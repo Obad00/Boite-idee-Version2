@@ -40,15 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
 
             form.style.display = "none";
-        ideasContainer.style.display = "none";
-        message.textContent = "Idée ajoutée avec succès!";
-        setTimeout(() => {
-          form.style.display = "block";
-          ideasContainer.style.display = "block";
-          message.textContent = "";
-        }, 2000);
-
-            displayIdeas();
+            message.textContent = "Idée ajoutée avec succès!";
+            setTimeout(() => {
+                form.style.display = "block";
+                ideasContainer.style.display = "block";
+                message.textContent = "";
+                displayIdeas();  // Recharger les idées après l'affichage du message de succès
+            }, 2000);
         }
     });
 
@@ -73,8 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
         return isValid;
     }
-    
-    
 
     function sanitizeInput(input) {
         const tempDiv = document.createElement("div");
@@ -150,9 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ideasContainer.appendChild(card);
         });
     }
-    
-    
-    
 
     function updateIdeaInStorage(ideas) {
         localStorage.setItem("ideas", JSON.stringify(ideas));
@@ -164,15 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("ideas", JSON.stringify(filteredIdeas));
     }
 
-    // function removeIdeaFromStorage(ideaToRemove) {
-    //     const ideas = JSON.parse(localStorage.getItem("ideas")) || [];
-    //     const filteredIdeas = ideas.filter(idea => idea !== ideaToRemove);
-    //     localStorage.setItem("ideas", JSON.stringify(filteredIdeas));
-    // }
-
-   
-
-    
     // Charger les idées du Local Storage au démarrage
     displayIdeas();
 });
