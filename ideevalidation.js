@@ -39,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
             addIdeaToStorage(idea);
             form.reset();
 
-            form.style.display = "none";
-            message.textContent = "Idée ajoutée avec succès!";
-            setTimeout(() => {
-                form.style.display = "block";
-                ideasContainer.style.display = "block";
-                message.textContent = "";
-                displayIdeas();  // Recharger les idées après l'affichage du message de succès
-            }, 2000);
+                                
+                        message.textContent = "Idée ajoutée avec succès!";
+                        form.style.display = "none";
+                        setTimeout(function() {
+                            form.style.display = "block";  
+                            message.textContent = "";      
+                            displayIdeas();                
+                        }, 2000);
+                        displayIdeas();
         }
     });
 
@@ -59,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { field: description, errorId: "descriptionError", message: "Le message descriptif est requis.", maxLength: 255 }
         ];
     
+        // Regex pour détecter les caractères indésirables (exemple : séquences répétées de caractères)
+        const unwantedCharsRegex = /(\w)\1{5,}/; // Exemple: détecte une lettre répétée 6 fois ou plus
+    
         validations.forEach(validation => {
             if (validation.field.trim() === "") {
                 showError(validation.errorId, validation.message);
@@ -66,11 +70,15 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (validation.maxLength && validation.field.length > validation.maxLength) {
                 showError(validation.errorId, `Ce champ ne peut pas dépasser ${validation.maxLength} caractères.`);
                 isValid = false;
+            } else if (unwantedCharsRegex.test(validation.field)) {
+                showError(validation.errorId, `Ce champ contient des caractères indésirables.`);
+                isValid = false;
             }
         });
     
         return isValid;
     }
+    
 
     function sanitizeInput(input) {
         const tempDiv = document.createElement("div");
@@ -100,20 +108,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement("div");
             card.classList.add("card");
     
+            // Ajouter la classe approuvée si l'idée est approuvée
+            if (idea.status === "Approuvée") {
+                card.classList.add("approved");
+            }
+
             // Ajouter la classe désapprouvée si l'idée est désapprouvée
             if (idea.status === "Désapprouvée") {
                 card.classList.add("disapproved");
             }
     
             // Déterminer la classe et l'icône du bouton initial en fonction de l'état de l'idée
-            let buttonClass, iconClass;
-            if (idea.status === "Approuvée") {
-                buttonClass = "disapprove-btn";
-                iconClass = "fa-times-circle";
-            } else {
-                buttonClass = "approve-btn";
-                iconClass = "fa-check-circle";
-            }
+            // let buttonClass, iconClass;
+            // if (idea.status === "Approuvée") {
+            //     buttonClass = "disapprove-btn";
+            //     iconClass = "fa-times-circle";
+            // } else {
+            //     buttonClass = "approve-btn";
+            //     iconClass = "fa-check-circle";
+            // }
     
             card.innerHTML = `
                 <div class="card-header">${idea.title}</div>
@@ -123,20 +136,28 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p><strong>Statut:</strong> <span class="status ${idea.status === 'Approuvée' ? 'approved' : 'disapproved'}">${idea.status}</span></p>
                 </div>
                 <div class="card-actions">
-                    <button class="${buttonClass}">
-                        <i class="fas ${iconClass}"></i>
-                    </button>
+                    ${idea.status === "En attente" ? `
+                    <button class="approve-btn"><i class="fas fa-check-circle"></i></button>
+                    <button class="disapprove-btn"><i class="fas fa-times-circle"></i></button>
+                    ` : ''}
                     <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `;
     
-            const statusBtn = card.querySelector(".approve-btn, .disapprove-btn");
-            statusBtn.addEventListener("click", () => {
-                // Basculer entre "Approuvée" and "Désapprouvée"
-                idea.status = idea.status === "Approuvée" ? "Désapprouvée" : "Approuvée";
-                updateIdeaInStorage(ideas);
-                displayIdeas(); // Rafraîchir les idées affichées
-            });
+            // Ajouter les événements aux boutons d'action
+            if (idea.status === "En attente") {
+                card.querySelector(".approve-btn").addEventListener("click", () => {
+                    idea.status = "Approuvée";
+                    updateIdeaInStorage(ideas);
+                    displayIdeas(); // Rafraîchir les idées affichées
+                });
+    
+                card.querySelector(".disapprove-btn").addEventListener("click", () => {
+                    idea.status = "Désapprouvée";
+                    updateIdeaInStorage(ideas);
+                    displayIdeas(); // Rafraîchir les idées affichées
+                });
+            }
     
             card.querySelector(".delete-btn").addEventListener("click", () => {
                 removeIdeaFromStorage(idea);
