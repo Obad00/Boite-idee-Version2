@@ -10,6 +10,10 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     padding: 20px;
+    background-image: url('https://img.freepik.com/premium-vector/light-bulb-up-from-opening-box-many-box-background_40073-63.jpg?w=1060'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center; 
 }
 
 /* Container styles */
@@ -71,7 +75,7 @@ textarea {
 
 /* Button styles */
 button {
-    background-color: #007bff;
+    background-color: #ce0033;
     color: #fff;
     border: none;
     padding: 12px 20px;
@@ -81,7 +85,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #73001d;
 }
 
 /* Ideas container styles */
@@ -98,12 +102,12 @@ button:hover {
 }
 
 .message {
-    background-color: #4caf50;
+    background-color: #BBD4CE;
     color: white;
 }
 
 .error-message {
-    background-color: #f44336;
+    background-color: #ce0033;
     color: white;
 }
 /* Container for ideas */
@@ -116,8 +120,12 @@ button:hover {
     align-items: flex-start; /* Aligner les éléments en haut */
 }
 
+.card.approved {
+    border: 2px solid #28a745; /* Bordure rouge pour désapprouvé */
+}
+
 .card.disapproved {
-    border: 2px solid #dc3545; /* Bordure rouge pour désapprouvé */
+    border: 2px solid #ce0033; /* Bordure rouge pour désapprouvé */
 }
 
 /* Styles for idea cards */
@@ -132,7 +140,7 @@ button:hover {
 }
 
 .card-header {
-    background-color: #007bff;
+    background-color: #BBD4CE;
     color: #fff;
     padding: 10px;
     font-weight: bold;
@@ -163,7 +171,7 @@ button:hover {
 }
 
 .card-actions button:hover {
-    color: #007bff;
+    color: #ce0033;
 }
 
 .status {
@@ -190,6 +198,8 @@ button:hover {
 .delete-btn {
     color: #6c757d;
 }
+
+
 
 .fa-asterisk {
     color: #dc3545;
