@@ -69,21 +69,22 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
                 { field: description, errorId: "descriptionError", message: "Le message descriptif est requis.", maxLength: 255 }
             ];
         
-            // Regex pour détecter les caractères indésirables (exemple : séquences répétées de caractères)
-            const unwantedCharsRegex = /(\w)\1{5,}/; // Exemple: détecte une lettre répétée 6 fois ou plus
-        
-            validations.forEach(validation => {
-                if (validation.field.trim() === "") {
-                    showError(validation.errorId, validation.message);
-                    isValid = false;
-                } else if (validation.maxLength && validation.field.length > validation.maxLength) {
-                    showError(validation.errorId, `Ce champ ne peut pas dépasser ${validation.maxLength} caractères.`);
-                    isValid = false;
-                } else if (unwantedCharsRegex.test(validation.field)) {
-                    showError(validation.errorId, `Ce champ contient des caractères indésirables.`);
-                    isValid = false;
-                }
-            });
+           // Regex pour détecter les caractères indésirables (exemple : 
+        //    séquences répétées de caractères et caractères spéciaux consécutifs)
+        const unwantedCharsRegex = /(\w)\1{5,}|[^a-zA-Z0-9\s]{2,}/;
+
+        validations.forEach(validation => {
+            if (validation.field.trim() === "") {
+                showError(validation.errorId, validation.message);
+                isValid = false;
+            } else if (validation.maxLength && validation.field.length > validation.maxLength) {
+                showError(validation.errorId, `Ce champ ne peut pas dépasser ${validation.maxLength} caractères.`);
+                isValid = false;
+            } else if (unwantedCharsRegex.test(validation.field)) {
+                showError(validation.errorId, `Ce champ contient des caractères indésirables.`);
+                isValid = false;
+            }
+        });
         
             return isValid;
         }
@@ -115,17 +116,43 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
                 const card = document.createElement("div");
                 card.classList.add("card");
     
+                // Ajouter la classe approuvée si l'idée est approuvée
+                if (idea.status === "Approuvée") {
+                    card.classList.add("approved");
+                }
+    
+                // Ajouter la classe désapprouvée si l'idée est désapprouvée
+                if (idea.status === "Désapprouvée") {
+                    card.classList.add("disapproved");
+                }
+    
                 card.innerHTML = `
                     <div class="card-header">${idea.title}</div>
                     <div class="card-body">
                         <p><strong>Catégorie:</strong> ${idea.category}</p>
                         <p><strong>Description:</strong> ${idea.description}</p>
-                        <p><strong>Statut:</strong> <span class="status">${idea.status}</span></p>
+                        <p><strong>Statut:</strong> <span class="status ${idea.status === 'Approuvée' ? 'approved' : idea.status === 'Désapprouvée' ? 'disapproved' : 'pending'}">${idea.status}</span></p>
                     </div>
                     <div class="card-actions">
-                        <button class="delete-btn">Supprimer</button>
+                        ${idea.status === "En attente" ? `
+                        <button class="approve-btn"><i class="fas fa-check-circle"></i></button>
+                        <button class="disapprove-btn"><i class="fas fa-times-circle"></i></button>
+                        ` : ''}
+                        <button class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 `;
+    
+                if (idea.status === "En attente") {
+                    card.querySelector(".approve-btn").addEventListener("click", async () => {
+                        await updateIdeaStatus(idea.id, "Approuvée");
+                        displayIdeas();
+                    });
+    
+                    card.querySelector(".disapprove-btn").addEventListener("click", async () => {
+                        await updateIdeaStatus(idea.id, "Désapprouvée");
+                        displayIdeas();
+                    });
+                }
     
                 card.querySelector(".delete-btn").addEventListener("click", async () => {
                     await removeIdeaFromSupabase(idea.id);
@@ -136,15 +163,33 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
             });
         }
     
-
-        async function removeIdeaFromSupabase(idea) {
-            const { error } = await supabaseClient.from('ideas').delete().eq('title', idea.title);
+        async function updateIdeaStatus(id, status) {
+            const { error } = await supabaseClient.from('ideas').update({ status }).eq('id', id);
+            if (error) {
+                console.error('Erreur lors de la mise à jour de l\'état de l\'idée:', error.message);
+                return;
+            }
+            console.log('État de l\'idée mis à jour avec succès:', id, status);
+        }
+    
+        async function removeIdeaFromSupabase(id) {
+            const { error } = await supabaseClient.from('ideas').delete().eq('id', id);
             if (error) {
                 console.error('Erreur lors de la suppression de l\'idée:', error.message);
                 return;
             }
-            console.log('Idée supprimée avec succès:', idea.title);
+            console.log('Idée supprimée avec succès de Supabase:', id);
         }
+    
+
+        // async function removeIdeaFromSupabase(idea) {
+        //     const { error } = await supabaseClient.from('ideas').delete().eq('title', idea.title);
+        //     if (error) {
+        //         console.error('Erreur lors de la suppression de l\'idée:', error.message);
+        //         return;
+        //     }
+        //     console.log('Idée supprimée avec succès:', idea.title);
+        // }
 
         // Charger les idées du Supabase au démarrage
         displayIdeas();

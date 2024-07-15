@@ -10,7 +10,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     padding: 20px;
-    background-image: url('https://img.freepik.com/premium-vector/light-bulb-up-from-opening-box-many-box-background_40073-63.jpg?w=1060'); 
+    background-image: url('https://img.freepik.com/vecteurs-libre/illustration-idees-ampoules_53876-20540.jpg?t=st=1721061197~exp=1721064797~hmac=59e40f64fafa1fefaf7e1c03faa0b95b6a0ad7e22bdb8fe9faf598c8e07bc805&w=1060'); 
     background-size: cover; 
     background-repeat: no-repeat; 
     background-position: center; 
@@ -102,7 +102,7 @@ button:hover {
 }
 
 .message {
-    background-color: #BBD4CE;
+    background-color: #66CAF2;
     color: white;
 }
 
@@ -140,7 +140,7 @@ button:hover {
 }
 
 .card-header {
-    background-color: #BBD4CE;
+    background-color: #66CAF2;
     color: #fff;
     padding: 10px;
     font-weight: bold;

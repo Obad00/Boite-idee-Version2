@@ -51,18 +51,42 @@
     <script src="ideevalidation.js"></script>
 
     <script>
-                function updateCounter(textarea) {
+            function updateCounter(textarea) {
                 const maxLength = parseInt(textarea.getAttribute('maxlength'));
                 const currentLength = textarea.value.length;
                 const remaining = maxLength - currentLength;
                 const counterElement = document.getElementById('descriptionCounter');
-                
-                if (remaining > 0) {
+
+                 // Mise à jour du texte du compteur et application de la couleur en fonction des caractères restants
+                if (remaining > 105) {
                     counterElement.textContent = `${currentLength}/${maxLength} caractères restants`;
-                } else if (remaining === 0) {
+                    counterElement.style.color = ""; // Default color
+                    textarea.style.color = ""; // Default color
+                } else if (remaining <= 105 && remaining > 55) {
+                    counterElement.textContent = `${currentLength}/${maxLength} caractères restants`;
+                    counterElement.style.color = "green";
+                    textarea.style.color = "green";
+                } else if (remaining <= 55 && remaining > 35) {
+                    counterElement.textContent = `${currentLength}/${maxLength} caractères restants`;
+                    counterElement.style.color = "orange";
+                    textarea.style.color = "orange";
+                } else if (remaining <= 35 && remaining > 0) {
+                    counterElement.textContent = `${currentLength}/${maxLength} caractères restants`;
+                    counterElement.style.color = "red";
+                    textarea.style.color = "red";
+                } else {
                     counterElement.textContent = `Vous avez atteint le nombre de caractères requis`;
+                    counterElement.style.color = "red";
+                    textarea.style.color = "red";
                 }
-                }
+            }
+
+            // Attachez l'écouteur d'événement à la zone de texte
+            document.getElementById("description").addEventListener("input", function() {
+                updateCounter(this);
+            });
+
+
     </script>
 </body>
 </html>
